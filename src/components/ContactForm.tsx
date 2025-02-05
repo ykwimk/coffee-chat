@@ -9,10 +9,41 @@ interface Props {
 }
 
 export default function ContactForm({ selectedDate, selectedTime }: Props) {
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [email, setEmail] = useState('');
-  const [message, setMessage] = useState('');
+  const [name, setName] = useState<string>('');
+  const [phone, setPhone] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+  const [message, setMessage] = useState<string>('');
+  const [errors, setErrors] = useState<{
+    name: boolean;
+    email: boolean;
+    selectedDate: boolean;
+    selectedTime: boolean;
+  }>({
+    name: false,
+    email: false,
+    selectedDate: false,
+    selectedTime: false,
+  });
+
+  const handleSubmit = () => {
+    const newErrors = {
+      name: name.trim() === '',
+      email: email.trim() === '',
+      selectedDate: !!!selectedDate,
+      selectedTime: !!!selectedTime,
+    };
+
+    setErrors(newErrors);
+
+    if (
+      !newErrors.name &&
+      !newErrors.email &&
+      !newErrors.selectedDate &&
+      !newErrors.selectedTime
+    ) {
+      alert('신청이 완료되었습니다! 🎉');
+    }
+  };
 
   return (
     <section className="mb-6">
@@ -23,7 +54,7 @@ export default function ContactForm({ selectedDate, selectedTime }: Props) {
         </label>
         <Input
           type="text"
-          className="mt-1"
+          className={`mt-1 ${errors.name ? 'border-red-500' : ''}`}
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="이름(회사명)을 입력하세요"
@@ -45,7 +76,7 @@ export default function ContactForm({ selectedDate, selectedTime }: Props) {
         </label>
         <Input
           type="email"
-          className="mt-1"
+          className={`mt-1 ${errors.email ? 'border-red-500' : ''}`}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="example@email.com"
@@ -60,7 +91,9 @@ export default function ContactForm({ selectedDate, selectedTime }: Props) {
           placeholder="전달하고 싶은 내용을 간단하게 작성해주세요."
         />
       </div>
-      <Button className="mt-4 w-full">신청하기</Button>
+      <Button className="mt-4 w-full" onClick={handleSubmit}>
+        신청하기
+      </Button>
     </section>
   );
 }
