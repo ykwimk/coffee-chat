@@ -6,13 +6,21 @@ import { Textarea } from '@/components/ui/textarea';
 interface Props {
   selectedDate?: Date;
   selectedTime: string;
+  setSelectedDate: (date: Date | undefined) => void;
+  setSelectedTime: (time: string) => void;
 }
 
-export default function ContactForm({ selectedDate, selectedTime }: Props) {
+export default function ContactForm({
+  selectedDate,
+  selectedTime,
+  setSelectedDate,
+  setSelectedTime,
+}: Props) {
   const [name, setName] = useState<string>('');
   const [phone, setPhone] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [message, setMessage] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errors, setErrors] = useState<{
     name: boolean;
     email: boolean;
@@ -25,7 +33,7 @@ export default function ContactForm({ selectedDate, selectedTime }: Props) {
     selectedTime: false,
   });
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const newErrors = {
       name: name.trim() === '',
       email: email.trim() === '',
@@ -33,15 +41,48 @@ export default function ContactForm({ selectedDate, selectedTime }: Props) {
       selectedTime: !!!selectedTime,
     };
 
-    setErrors(newErrors);
-
     if (
-      !newErrors.name &&
-      !newErrors.email &&
-      !newErrors.selectedDate &&
-      !newErrors.selectedTime
+      newErrors.name ||
+      newErrors.email ||
+      newErrors.selectedDate ||
+      newErrors.selectedTime
     ) {
-      alert('신청이 완료되었습니다! 🎉');
+      setErrors(newErrors);
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const response = await fetch('/api/send-mail', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name,
+          phone,
+          email,
+          message,
+          selectedDate: selectedDate?.toLocaleDateString(),
+          selectedTime,
+        }),
+      });
+
+      if (response.ok) {
+        alert('신청이 완료되었습니다! 🎉');
+        setName('');
+        setPhone('');
+        setEmail('');
+        setMessage('');
+        setSelectedDate(undefined);
+        setSelectedTime('');
+      } else {
+        alert('❌ 이메일 전송에 실패했습니다. 다시 시도해주세요.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('❌ 오류가 발생했습니다. 다시 시도해주세요.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -91,8 +132,12 @@ export default function ContactForm({ selectedDate, selectedTime }: Props) {
           placeholder="전달하고 싶은 내용을 간단하게 작성해주세요."
         />
       </div>
-      <Button className="mt-4 w-full" onClick={handleSubmit}>
-        신청하기
+      <Button
+        className="mt-4 w-full"
+        disabled={isLoading}
+        onClick={handleSubmit}
+      >
+        {isLoading ? '전송 중...' : '신청하기'}
       </Button>
     </section>
   );

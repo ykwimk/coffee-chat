@@ -31,6 +31,8 @@ export default function HomeContainer() {
           <ContactForm
             selectedDate={selectedDate}
             selectedTime={selectedTime}
+            setSelectedDate={setSelectedDate}
+            setSelectedTime={setSelectedTime}
           />
         </div>
       </div>
