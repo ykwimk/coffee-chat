@@ -1,13 +1,14 @@
 'use client';
 
 import { useState } from 'react';
+import ScheduleSummary from '@/components/ScheduleSummary';
 import CalendarSection from '@/components/CalendarSection';
 import TimeSelectSection from '@/components/TimeSelectSection';
-import ScheduleSummary from '@/components/ScheduleSummary';
+import ContactForm from '@/components/ContactForm';
 
 export default function HomeContainer() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
-  const [selectedTime, setSelectedTime] = useState('');
+  const [selectedTime, setSelectedTime] = useState<string>('');
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-gray-50">
@@ -22,8 +23,12 @@ export default function HomeContainer() {
             onSelectTime={setSelectedTime}
           />
         </div>
-        <div className="w-96 rounded-lg bg-white p-8 shadow">
+        <div className="w-full rounded-lg bg-white p-8 shadow">
           <ScheduleSummary
+            selectedDate={selectedDate}
+            selectedTime={selectedTime}
+          />
+          <ContactForm
             selectedDate={selectedDate}
             selectedTime={selectedTime}
           />
