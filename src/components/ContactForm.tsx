@@ -35,7 +35,12 @@ export default function ContactForm() {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ): void => {
-    const { name, value } = e.target;
+    let { name, value } = e.target;
+
+    if (name === 'phone') {
+      value = value.replace(/[^0-9-]/g, '');
+    }
+
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
