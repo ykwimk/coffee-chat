@@ -148,6 +148,10 @@ export default function ContactForm() {
       >
         {isLoading ? '전송 중...' : '신청하기'}
       </Button>
+      <p className="mt-2 text-xs text-gray-500">
+        * 입력하신 개인정보는 저장되지 않으며, 신청 확인 메일 전송 후 즉시
+        폐기됩니다.
+      </p>
     </section>
   );
 }
