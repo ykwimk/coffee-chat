@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import FormField from './FormField';
 import { useCoffeeChatContext } from './HomeContainer';
+import { sendGAEvent } from '@next/third-parties/google';
 
 interface FormData {
   name: string;
@@ -61,6 +62,8 @@ export default function ContactForm() {
   };
 
   const handleSubmit = async () => {
+    sendGAEvent('event', '신청하기_버튼_클릭');
+
     const isValid = validationForm();
 
     if (!isValid) return;

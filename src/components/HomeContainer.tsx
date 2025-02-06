@@ -1,6 +1,7 @@
 'use client';
 
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
+import { sendGAEvent } from '@next/third-parties/google';
 import ScheduleSummary from '@/components/ScheduleSummary';
 import CalendarSection from '@/components/CalendarSection';
 import TimeSelectSection from '@/components/TimeSelectSection';
@@ -41,6 +42,10 @@ export default function HomeContainer() {
     selectedDate: false,
     selectedTime: false,
   });
+
+  useEffect(() => {
+    sendGAEvent('page_view', '페이지_접속');
+  }, []);
 
   return (
     <CoffeeChatContext.Provider
