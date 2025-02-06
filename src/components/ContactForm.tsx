@@ -3,24 +3,22 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import FormField from './FormField';
+import { useCoffeeChatContext } from './HomeContainer';
 
-interface Props {
-  selectedDate?: Date;
-  selectedTime: string;
-  setSelectedDate: (date: Date | undefined) => void;
-  setSelectedTime: (time: string) => void;
+interface FormData {
+  name: string;
+  phone?: string;
+  email: string;
+  message?: string;
 }
 
-export default function ContactForm({
-  selectedDate,
-  selectedTime,
-  setSelectedDate,
-  setSelectedTime,
-}: Props) {
-  const [name, setName] = useState<string>('');
-  const [phone, setPhone] = useState<string>('');
-  const [email, setEmail] = useState<string>('');
-  const [message, setMessage] = useState<string>('');
+const initialFormData = { name: '', phone: '', email: '', message: '' };
+
+export default function ContactForm() {
+  const { selectedDate, selectedTime, setSelectedDate, setSelectedTime } =
+    useCoffeeChatContext();
+
+  const [formData, setFormData] = useState<FormData>(initialFormData);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errors, setErrors] = useState<{
     name: boolean;
@@ -34,10 +32,17 @@ export default function ContactForm({
     selectedTime: false,
   });
 
-  const handleSubmit = async () => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ): void => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const validationForm = (): boolean => {
     const newErrors = {
-      name: name.trim() === '',
-      email: email.trim() === '',
+      name: formData.name.trim() === '',
+      email: formData.email.trim() === '',
       selectedDate: !!!selectedDate,
       selectedTime: !!!selectedTime,
     };
@@ -49,12 +54,22 @@ export default function ContactForm({
       newErrors.selectedTime
     ) {
       setErrors(newErrors);
-      return;
+      return false;
     }
+
+    return true;
+  };
+
+  const handleSubmit = async () => {
+    const isValid = validationForm();
+
+    if (!isValid) return;
 
     setIsLoading(true);
 
     try {
+      const { name, phone, email, message } = formData;
+
       const response = await fetch('/api/send-mail', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -70,10 +85,7 @@ export default function ContactForm({
 
       if (response.ok) {
         alert('신청이 완료되었습니다! 🎉');
-        setName('');
-        setPhone('');
-        setEmail('');
-        setMessage('');
+        setFormData(initialFormData);
         setSelectedDate(undefined);
         setSelectedTime('');
       } else {
@@ -94,8 +106,9 @@ export default function ContactForm({
         <Input
           type="text"
           className={`mt-1 ${errors.name ? 'border-red-500' : ''}`}
-          value={name}
-          onChange={(e) => setName(e.target.value)}
+          name="name"
+          value={formData.name}
+          onChange={handleChange}
           placeholder="이름(회사명)을 입력하세요"
         />
       </FormField>
@@ -103,8 +116,9 @@ export default function ContactForm({
         <Input
           type="tel"
           className="mt-1"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
+          name="phone"
+          value={formData.phone}
+          onChange={handleChange}
           placeholder="010-0000-0000"
         />
       </FormField>
@@ -112,16 +126,18 @@ export default function ContactForm({
         <Input
           type="email"
           className={`mt-1 ${errors.email ? 'border-red-500' : ''}`}
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
           placeholder="example@email.com"
         />
       </FormField>
       <FormField label="하고 싶은 말">
         <Textarea
           className="mt-1 h-36 resize-none"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
+          value={formData.message}
+          name="message"
+          onChange={handleChange}
           placeholder="전달하고 싶은 내용을 간단하게 작성해주세요."
         />
       </FormField>

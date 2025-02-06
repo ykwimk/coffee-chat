@@ -4,16 +4,11 @@ import {
   SelectItem,
   SelectTrigger,
 } from '@/components/ui/select';
+import { useCoffeeChatContext } from './HomeContainer';
 
-interface Props {
-  selectedTime: string;
-  onSelectTime: (time: string) => void;
-}
+export default function TimeSelectSection() {
+  const { selectedTime, setSelectedTime } = useCoffeeChatContext();
 
-export default function TimeSelectSection({
-  selectedTime,
-  onSelectTime,
-}: Props) {
   // 09:00 ~ 18:00까지 30분 간격 시간 목록
   const times = [
     '09:00',
@@ -41,7 +36,7 @@ export default function TimeSelectSection({
     <section className="mb-6">
       <h2 className="text-xl font-semibold text-gray-800">시간 선택</h2>
       <div className="mt-2">
-        <Select value={selectedTime} onValueChange={onSelectTime}>
+        <Select value={selectedTime} onValueChange={setSelectedTime}>
           <SelectTrigger className="w-full">
             {selectedTime ? selectedTime : '시간 선택'}
           </SelectTrigger>

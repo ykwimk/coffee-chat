@@ -1,9 +1,8 @@
-interface Props {
-  selectedDate?: Date;
-  selectedTime: string;
-}
+import { useCoffeeChatContext } from './HomeContainer';
 
-export default function ScheduleSummary({ selectedDate, selectedTime }: Props) {
+export default function ScheduleSummary() {
+  const { selectedDate, selectedTime } = useCoffeeChatContext();
+
   return (
     <section className="mb-6">
       <h2 className="text-xl font-semibold text-gray-800">선택한 일정</h2>

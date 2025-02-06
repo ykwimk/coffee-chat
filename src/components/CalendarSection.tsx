@@ -1,11 +1,9 @@
 import { Calendar } from '@/components/ui/calendar';
+import { useCoffeeChatContext } from './HomeContainer';
 
-interface Props {
-  selectedDate: Date | undefined;
-  onSelectDate: (date: Date | undefined) => void;
-}
+export default function CalendarSection() {
+  const { selectedDate, setSelectedDate } = useCoffeeChatContext();
 
-export default function CalendarSection({ selectedDate, onSelectDate }: Props) {
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
   tomorrow.setHours(0, 0, 0, 0);
@@ -29,7 +27,7 @@ export default function CalendarSection({ selectedDate, onSelectDate }: Props) {
         mode="single"
         disabled={{ before: tomorrow }}
         selected={selectedDate}
-        onSelect={(date) => onSelectDate(date)}
+        onSelect={(date) => setSelectedDate(date)}
       />
     </section>
   );
