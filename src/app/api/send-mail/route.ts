@@ -31,13 +31,26 @@ export async function POST(request: Request) {
       `,
     };
 
-    await transporter.sendMail(mailOptions);
+    await new Promise((resolve, reject) => {
+      transporter.sendMail(mailOptions, (err, info) => {
+        if (err) {
+          console.error(err);
+          reject(err);
+        } else {
+          console.log(info);
+          resolve(info);
+        }
+      });
+    });
 
     return NextResponse.json({
       success: '이메일이 성공적으로 전송되었습니다!',
     });
   } catch (error) {
     console.error('메일 전송 오류:', error);
-    return NextResponse.json({ error: '이메일 전송에 실패했습니다.' });
+    return NextResponse.json({
+      ok: false,
+      error: '이메일 전송에 실패했습니다.',
+    });
   }
 }

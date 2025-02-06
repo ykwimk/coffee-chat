@@ -2,7 +2,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { useCoffeeChatContext } from './HomeContainer';
 
 export default function CalendarSection() {
-  const { selectedDate, setSelectedDate } = useCoffeeChatContext();
+  const { selectedDate, errors, setSelectedDate } = useCoffeeChatContext();
 
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
@@ -29,6 +29,9 @@ export default function CalendarSection() {
         selected={selectedDate}
         onSelect={(date) => setSelectedDate(date)}
       />
+      {errors.selectedDate && (
+        <p className="mt-1 text-sm text-red-500">날짜를 선택해주세요.</p>
+      )}
     </section>
   );
 }

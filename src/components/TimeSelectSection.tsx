@@ -7,7 +7,7 @@ import {
 import { useCoffeeChatContext } from './HomeContainer';
 
 export default function TimeSelectSection() {
-  const { selectedTime, setSelectedTime } = useCoffeeChatContext();
+  const { selectedTime, errors, setSelectedTime } = useCoffeeChatContext();
 
   // 09:00 ~ 18:00까지 30분 간격 시간 목록
   const times = [
@@ -48,6 +48,9 @@ export default function TimeSelectSection() {
             ))}
           </SelectContent>
         </Select>
+        {errors.selectedTime && (
+          <p className="mt-2 text-sm text-red-500">시간을 선택해주세요.</p>
+        )}
       </div>
     </section>
   );

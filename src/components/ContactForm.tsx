@@ -15,22 +15,17 @@ interface FormData {
 const initialFormData = { name: '', phone: '', email: '', message: '' };
 
 export default function ContactForm() {
-  const { selectedDate, selectedTime, setSelectedDate, setSelectedTime } =
-    useCoffeeChatContext();
+  const {
+    selectedDate,
+    selectedTime,
+    errors,
+    setSelectedDate,
+    setSelectedTime,
+    setErrors,
+  } = useCoffeeChatContext();
 
   const [formData, setFormData] = useState<FormData>(initialFormData);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [errors, setErrors] = useState<{
-    name: boolean;
-    email: boolean;
-    selectedDate: boolean;
-    selectedTime: boolean;
-  }>({
-    name: false,
-    email: false,
-    selectedDate: false,
-    selectedTime: false,
-  });
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
