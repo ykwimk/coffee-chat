@@ -53,8 +53,8 @@ export default function HomeContainer() {
         setErrors,
       }}
     >
-      <main className="flex min-h-screen items-center justify-center bg-gray-50">
-        <div className="flex w-full max-w-2xl items-start justify-center gap-3">
+      <main className="flex min-h-screen items-center justify-center bg-gray-50 max-md:p-5">
+        <div className="flex w-full max-w-2xl items-start justify-center gap-3 max-md:block">
           <div className="w-full rounded-lg bg-white p-8 shadow">
             <CalendarSection />
             <TimeSelectSection />
